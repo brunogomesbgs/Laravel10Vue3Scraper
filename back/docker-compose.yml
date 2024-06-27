@@ -20,6 +20,7 @@ services:
     networks:
       - app-network
 
+  #Vue3 Service
   front:
     stdin_open: true
     container_name: front

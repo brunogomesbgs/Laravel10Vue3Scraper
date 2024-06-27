@@ -7,9 +7,9 @@ let title = "User´s Url List"
 const urlsStore = useUrlsStore();
 const authStore = useAuthStore();
 const { user } = storeToRefs(authStore);
+const { urls } = storeToRefs(urlsStore);
 
 urlsStore.listAllUrl(user.value[0].id)
-let urls = JSON.parse(localStorage.getItem('url'))
 </script>
 
 <template>
@@ -32,6 +32,7 @@ let urls = JSON.parse(localStorage.getItem('url'))
         <td>{{ url.url }}</td>
         <td>{{ url.links_account }}</td>
         <td style="white-space: nowrap">
+          <router-link :to="`/urls/update/${url.id}`" class="btn btn-sm btn-warning mr-1">Edit</router-link>
           <router-link :to="`/urls/listUrlWithLinks/${url.id}`" class="btn btn-sm btn-primary mr-1">Details</router-link>
           <button @click="urlsStore.deleteUrl(url.id)" class="btn btn-sm btn-danger btn-delete-user" :disabled="url.isDeleting">
             <span v-if="url.isDeleting" class="spinner-border spinner-border-sm"></span>

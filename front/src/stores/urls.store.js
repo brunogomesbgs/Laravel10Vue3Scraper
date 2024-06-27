@@ -13,10 +13,11 @@ export const useUrlsStore = defineStore({
   }),
   actions: {
     async addUrl(userId, name, url) {
-      await fetchWrapper.post(
+      this.urls = await fetchWrapper.post(
         `${baseUrl}/`,
         { userId: userId, name: name, url: url }
       );
+      localStorage.setItem('url', JSON.stringify(this.urls))
     },
     async deleteUrl(value) {
       this.urls = { loading: true };
@@ -33,7 +34,6 @@ export const useUrlsStore = defineStore({
       this.urls = { loading: true };
       try {
         this.urls = await fetchWrapper.post(`${baseUrl}/listAll`,{ userId: userId });
-        localStorage.setItem('url', JSON.stringify(this.urls));
       } catch (error) {
         this.urls = { error }
       }
@@ -43,6 +43,7 @@ export const useUrlsStore = defineStore({
       try {
         const response = await fetch(`${baseUrl}/${id}`);
         this.urls = await response.json();
+        localStorage.setItem('url', JSON.stringify(this.urls))
       } catch (error) {
         this.urls = { error }
       }
@@ -63,9 +64,8 @@ export const useUrlsStore = defineStore({
           `${baseUrl}/${id}`,
           { userId: userId, name: name, url: url }
         );
-        this.urls = null;
-        localStorage.removeItem('url');
-        await router.push('/');
+
+        this.url = null
       } catch (error) {
         this.urls = { error }
       }

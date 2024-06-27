@@ -6,6 +6,7 @@ export default {
   children: [
     {path: 'add', component: AddUrl},
     {path: 'list', component: ListUrl},
-    {path: 'listUrlWithLinks/:id', component: ListUrlDetails}
+    {path: 'listUrlWithLinks/:id', component: ListUrlDetails},
+    {path: 'update/:id', component: AddUrl}
   ]
 };

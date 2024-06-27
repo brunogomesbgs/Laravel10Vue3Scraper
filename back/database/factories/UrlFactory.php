@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Models\User as Users;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,9 +19,10 @@ class UrlFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory()->create(),
-            'url' => $this->faker->url(),
-            'name' => $this->faker->name(),
+            'id' => fake()->unique()->randomNumber(1),
+            'user_id' => Users::factory()->make()->id,
+            'url' => fake()->url(),
+            'name' => fake()->name(),
         ];
     }
 }

@@ -19,7 +19,7 @@ class LinkFactory extends Factory
     public function definition(): array
     {
         return [
-            'url_id' => Url::factory()->create(),
+            'url_id' => Url::factory()->create()->id,
             'link' => $this->faker->url(),
             'name' => $this->faker->name(),
         ];

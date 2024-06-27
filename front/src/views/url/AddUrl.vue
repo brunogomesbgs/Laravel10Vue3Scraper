@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia';
 import { useRoute } from 'vue-router';
 import { useUrlsStore, useAlertStore, useAuthStore } from '@/stores';
 import { router } from '@/router';
+import { ref } from 'vue'
 
 const route = useRoute();
 const id = route.params.id;
@@ -13,7 +14,18 @@ const alertStore = useAlertStore()
 const authStore = useAuthStore();
 
 let title = 'Add Url';
-let url = null;
+let url = ref({name: null, url: null});
+
+let name = defineModel('name')
+let url_value = defineModel('url')
+
+if (id) {
+  title = 'Edit Url';
+  urlsStore.listUrl(id);
+  ({ url } = storeToRefs(urlsStore));
+  name.value = url.value.name
+  url_value.value = url.value.url
+}
 
 const schema = Yup.object().shape({
   name: Yup.string()
@@ -27,8 +39,13 @@ const { user }  = storeToRefs(authStore);
 async function onSubmit(values) {
   try {
     let message
-    await urlsStore.addUrl(user.value[0].id, values.name, values.url);
-    message = "Url saved";
+    if (values.name && values.url && id) {
+      await urlsStore.updateUrl(id, user.value[0].id, values.name, values.url);
+      message = "Url updated successfully";
+    } else {
+      await urlsStore.addUrl(user.value[0].id, values.name, values.url);
+      message = "Url saved";
+    }
 
     await router.push('/');
     alertStore.success(message)
@@ -44,12 +61,12 @@ async function onSubmit(values) {
     <Form @submit="onSubmit" :validation-schema="schema" :initial-values="url" v-slot="{ errors, isSubmitting }">
       <div class="form-group">
         <label>Name</label>
-        <Field name="name" type="text" class="form-control" :class="{ 'is-invalid': errors.name }" />
+        <Field name="name" v-model="name" type="text" class="form-control" :class="{ 'is-invalid': errors.name }" />
         <div class="invalid-feedback">{{ errors.name }}</div>
       </div>
       <div class="form-group">
         <label>Url</label>
-        <Field name="url" type="text" class="form-control" :class="{ 'is-invalid': errors.url }" />
+        <Field name="url" v-model="url_value" type="text" class="form-control" :class="{ 'is-invalid': errors.url }" />
         <div class="invalid-feedback">{{ errors.url }}</div>
       </div>
       <div class="form-group">
